@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*- 
 from flask import Flask
-from flask.helpers import request
+from flask.helpers import request, jsonify
 import json
 
 app = Flask(__name__)
@@ -42,6 +42,10 @@ def promo():
     u"""Получение списка видео из промоблока  """
     promo_from=request.args.get('from', 0, type=int)
     promo_to=request.args.get('to', 0, type=int)
+    if promo_from>promo_to:
+        return jsonify(error='parametr to less than parametr from')
+    if promo_to-promo_from > 100:
+        promo_to=promo_from+100
     d=list(promo_generator(promo_from,promo_to))
     print d
     return '%s'%d
