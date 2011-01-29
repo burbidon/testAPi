@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*- 
 from flask import Flask
 from flask.helpers import request, jsonify
+from functools import wraps
 import json
+
 
 app = Flask(__name__)
 
@@ -38,17 +40,35 @@ def promo_generator(promo_from=None, promo_to=None):
             yield {'id':video_id,'title':'Video %s'%video_id,'Category_id':1,'Genre_id':1}
         video_id=video_id+1
         num=num+1
+        
+
+
+
+def templated(template=None):
+    u'''Декоратор для функций API'''
+    def decorator(f):
+        @wraps(f)
+        def decorated_function(*args, **kwargs):
+
+            ctx = f(*args, **kwargs)
+            if ctx is None:
+                ctx = {}
+            return json.dumps(ctx)
+        return decorated_function
+    return decorator
 
 
 
 
 @app.route('/categories/')
+@templated()
 def categories():
     u'''Получение списка всех рубрик  '''
     d=list(cat_generator())
-    return json.dumps(d)
+    return d
 
 @app.route('/promo/')
+@templated()
 def promo():
     u'''Получение списка видео из промоблока'''
     promo_from=None
@@ -60,7 +80,7 @@ def promo():
     if (promo_from and promo_to) and promo_from>promo_to:
         return jsonify(error='parametr to less than parametr from')
     d=list(promo_generator(promo_from,promo_to))
-    return json.dumps(d)
+    return d
 
 
 @app.route('/_add_numbers')
