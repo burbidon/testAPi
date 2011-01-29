@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*- 
 from flask import Flask
 from flask.helpers import request, jsonify
-import simplejson as json
+import  json
 
 import json
 
@@ -9,7 +9,7 @@ app = Flask(__name__)
 
 
 def cat_generator():
-    '''Генератор категорий и жанров'''
+    u'''Генератор категорий и жанров'''
     cat_id=0;
     genre_id=0;
     while cat_id<4:
@@ -23,7 +23,7 @@ def cat_generator():
     
 
 def promo_generator(promo_from=None, promo_to=None):
-    '''Генератор видео для промоблока'''
+    u'''Генератор видео для промоблока'''
     video_id=0;
     num=0;
     while video_id<10:
