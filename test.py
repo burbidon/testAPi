@@ -42,7 +42,6 @@ def promo():
     u"""Получение списка видео из промоблока  """
     promo_from=request.args.get('from', 0, type=int)
     promo_to=request.args.get('to', 0, type=int)
-    print promo_from, promo_to
     d=list(promo_generator(promo_from,promo_to))
     print d
     return '%s'%d
