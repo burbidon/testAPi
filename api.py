@@ -5,12 +5,15 @@ import json
 
 app = Flask(__name__)
 
+FROM='from'
+TO='to'
+DEFAULT_COUNT=20
+
 
 def cat_generator():
     u'''Генератор категорий и жанров'''
-    cat_id=0;
     genre_id=0;
-    while cat_id<4:
+    for cat_id in xrange(4):
         genres=[]
         while genre_id<(cat_id+1)*5:
             t=u'Жанр %s'%genre_id
@@ -24,8 +27,14 @@ def promo_generator(promo_from=None, promo_to=None):
     u'''Генератор видео для промоблока'''
     video_id=0;
     num=0;
+    if promo_from and promo_to and promo_to-promo_from > 100:
+        promo_to=promo_from+100
+    if not promo_from:
+        promo_from=0
+    if not promo_to:
+        promo_to=promo_from+DEFAULT_COUNT
     while video_id<10:
-        if (promo_from<=num<=promo_to) or (promo_from==None and promo_to==None):
+        if (promo_from<=num<=promo_to) or (not promo_from and not promo_to):
             yield {'id':video_id,'title':'Video %s'%video_id,'Category_id':1,'Genre_id':1}
         video_id=video_id+1
         num=num+1
@@ -35,19 +44,21 @@ def promo_generator(promo_from=None, promo_to=None):
 
 @app.route('/categories/')
 def categories():
-    u"""Получение списка всех рубрик  """
+    u'''Получение списка всех рубрик  '''
     d=list(cat_generator())
     return json.dumps(d)
 
 @app.route('/promo/')
 def promo():
-    u"""Получение списка видео из промоблока  """
-    promo_from=request.args.get('from', 0, type=int)
-    promo_to=request.args.get('to', 0, type=int)
-    if promo_from>promo_to:
+    u'''Получение списка видео из промоблока'''
+    promo_from=None
+    promo_to=None
+    if FROM in request.args:
+        promo_from=request.args.get(FROM, 0, type=int)
+    if TO in request.args:
+        promo_to=request.args.get(TO, 0, type=int)
+    if (promo_from and promo_to) and promo_from>promo_to:
         return jsonify(error='parametr to less than parametr from')
-    if promo_to-promo_from > 100:
-        promo_to=promo_from+100
     d=list(promo_generator(promo_from,promo_to))
     return json.dumps(d)
 
