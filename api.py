@@ -37,7 +37,7 @@ def promo_generator(promo_from=None, promo_to=None):
         promo_to=promo_from+DEFAULT_COUNT
     while video_id<10:
         if (promo_from<=num<=promo_to) or (not promo_from and not promo_to):
-            yield {'id':video_id,'title':'Video %s'%video_id,'Category_id':1,'Genre_id':1}
+            yield {'id':video_id,'thumbnail':u'http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg', 'title':'Video %s'%video_id,'Category_id':1,'Genre_id':1}
         video_id=video_id+1
         num=num+1
         
@@ -83,11 +83,7 @@ def promo():
     return d
 
 
-@app.route('/_add_numbers')
-def add_numbers():
-    a = request.args.get('a', 0, type=int)
-    b = request.args.get('b', 0, type=int)
-    return jsonify(result=a + b,method='_add_numbers',)
+
 
 
 if __name__ == '__main__':
