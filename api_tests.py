@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*- 
 __author__ = 'eross'
 
 import api
@@ -27,10 +28,15 @@ class APITestCase(unittest.TestCase):
     def test_promo(self):
         rv = self.app.get('/promo/')
         res=json.loads(rv.data)
-        res_et=[{"Genre_id": 1, "title": "Video 0", "Category_id": 1, "id": 0, "thumbnail": "http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg"}, {"Genre_id": 1, "title": "Video 1", "Category_id": 1, "id": 1, "thumbnail": "http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg"}, {"Genre_id": 1, "title": "Video 2", "Category_id": 1, "id": 2, "thumbnail": "http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg"}, {"Genre_id": 1, "title": "Video 3", "Category_id": 1, "id": 3, "thumbnail": "http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg"}, {"Genre_id": 1, "title": "Video 4", "Category_id": 1, "id": 4, "thumbnail": "http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg"}, {"Genre_id": 1, "title": "Video 5", "Category_id": 1, "id": 5, "thumbnail": "http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg"}, {"Genre_id": 1, "title": "Video 6", "Category_id": 1, "id": 6, "thumbnail": "http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg"}, {"Genre_id": 1, "title": "Video 7", "Category_id": 1, "id": 7, "thumbnail": "http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg"}, {"Genre_id": 1, "title": "Video 8", "Category_id": 1, "id": 8, "thumbnail": "http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg"}, {"Genre_id": 1, "title": "Video 9", "Category_id": 1, "id": 9, "thumbnail": "http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg"}]
-        assert len(res)==len(res_et)
+        assert len(res)==20 # Пока стоит такое ограничение на выдачу по умолчанию
+
+    def test_promo_objects(self):
+        rv = self.app.get('/promo/?from=0&to=3')
+        res=json.loads(rv.data)
+        res_et=[{u'genres': [1], u'title': u'Video 0', u'compilation': u'Comedy Club', u'thumbnail': u'http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg', u'descrtiption': u'\u041e\u0447\u0435\u043d\u044c \u0441\u043c\u0435\u0448\u043d\u043e', u'id': 0, u'categories': [1]}, {u'genres': [1], u'title': u'Video 1', u'compilation': u'Comedy Club', u'thumbnail': u'http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg', u'descrtiption': u'\u041e\u0447\u0435\u043d\u044c \u0441\u043c\u0435\u0448\u043d\u043e', u'id': 1, u'categories': [1]}, {u'genres': [1], u'title': u'Video 2', u'compilation': u'Comedy Club', u'thumbnail': u'http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg', u'descrtiption': u'\u041e\u0447\u0435\u043d\u044c \u0441\u043c\u0435\u0448\u043d\u043e', u'id': 2, u'categories': [1]}, {u'genres': [1], u'title': u'Video 3', u'compilation': u'Comedy Club', u'thumbnail': u'http://img.ivi.ru/static/c8/0f69/c80f697da72360033f8a.1.jpg', u'descrtiption': u'\u041e\u0447\u0435\u043d\u044c \u0441\u043c\u0435\u0448\u043d\u043e', u'id': 3, u'categories': [1]}]
         for i in res:
             assert i in res_et
+
 
     def test_promo_from_to(self):
         rv = self.app.get('/promo/?from=1&to=2')
@@ -38,15 +44,15 @@ class APITestCase(unittest.TestCase):
         assert len(res)==2
 
     def test_promo_from_to100(self):
-        rv = self.app.get('/promo/?from=5&to=100')
+        rv = self.app.get('/promo/?from=5&to=150')
         res=json.loads(rv.data)
-        assert len(res)==5
+        assert len(res)==100
 
 
     def test_promo_from(self):
        rv = self.app.get('/promo/?from=1')
        res=json.loads(rv.data)
-       assert len(res)==9
+       assert len(res)==20
 
     def test_promo_to(self):
        rv = self.app.get('/promo/?to=1')
@@ -60,8 +66,11 @@ class APITestCase(unittest.TestCase):
     def test_promo_get_type_values(self):
        rv = self.app.get('/promo/?from=zopa&to=sisa')
        res=json.loads(rv.data)
-       assert len(res)==10
+       assert len(res)==20
 
+    def test_videos_category_genre(self):
+        rv = self.app.get('/videos/?category=5&genre=4')
+        assert 'error' in rv.data
 
 
 if __name__ == '__main__':
