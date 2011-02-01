@@ -78,7 +78,7 @@ def promo():
     if TO in request.args:
         promo_to=request.args.get(TO, 0, type=int)
     if (promo_from and promo_to) and promo_from>promo_to:
-        return jsonify(error='parametr to less than parametr from')
+        return {error:'parametr to less than parametr from'}
     d=list(promo_generator(promo_from,promo_to))
     return d
 
